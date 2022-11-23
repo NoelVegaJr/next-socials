@@ -10,6 +10,7 @@ export const postRouter = router({
       console.log("trpc post router userId: ", userId);
       const userPosts = await prisma.post.findMany({
         where: { userId },
+        include: { likes: true },
       });
       console.log("trpc post router: ", userPosts);
       return userPosts;
@@ -28,10 +29,27 @@ export const postRouter = router({
         data: {
           text,
           userId,
+          date: new Date(),
         },
       });
 
       return newPost;
+    }),
+  like: procedure
+    .input(z.object({ postId: z.string(), userId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { postId, userId } = input;
+      await prisma.postLike.create({
+        data: { postId, userId },
+      });
+    }),
+  unlike: procedure
+    .input(z.object({ likeId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { likeId } = input;
+      await prisma.postLike.delete({
+        where: { id: likeId },
+      });
     }),
 });
 

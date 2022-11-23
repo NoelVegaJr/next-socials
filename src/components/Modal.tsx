@@ -16,7 +16,7 @@ const BackDrop = ({ children, close }: IBackDropProps) => {
   return createPortal(
     <div
       onClick={(e) => {
-        e.stopPropagation();
+        console.log("backdrop clicked");
         close();
       }}
       className="fixed h-screen w-full bg-slate-900/60 top-0 left-0 z-50 flex justify-center items-center border"

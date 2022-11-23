@@ -10,7 +10,6 @@ interface IPostsProps {
 const Posts: React.FunctionComponent<IPostsProps> = ({
   userId,
 }: IPostsProps) => {
-  console.log("Post page userId: ", userId);
   const getPosts = trpc.post.getPostsByUserId.useQuery({
     userId,
   });
@@ -22,14 +21,19 @@ const Posts: React.FunctionComponent<IPostsProps> = ({
     }
   }, [getPosts.data]);
 
-  console.log(posts);
   return (
     <>
       <ul className="flex flex-col gap-4">
         {posts?.map((post) => {
           return (
             <li key={post.id}>
-              <Post text={post.text} />
+              <Post
+                id={post.id}
+                text={post.text}
+                date={post.date}
+                likes={post.likes}
+                userId={userId}
+              />
             </li>
           );
         })}
