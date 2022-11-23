@@ -43,6 +43,7 @@ model User {
   image         String?
   posts Post[]
   likedPosts PostLike[]
+  postComments PostComment[]
   accounts      Account[]
   sessions      Session[]
 }
@@ -62,6 +63,7 @@ model Post {
   date          DateTime
   user          User @relation(fields: [userId], references: [id])
   likes PostLike[]
+  comments PostComment[]
 }
 
 model PostLike {
@@ -71,4 +73,14 @@ model PostLike {
   userId String
   user          User @relation(fields: [userId], references: [id])
 
+}
+
+model PostComment {
+  id            String    @id @default(cuid())
+  postId String
+  userId String
+  text String
+  date DateTime
+  post          Post @relation(fields: [postId], references: [id])
+  user          User @relation(fields: [userId], references: [id])
 }
