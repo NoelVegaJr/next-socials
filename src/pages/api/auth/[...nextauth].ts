@@ -3,9 +3,10 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prismadb";
+import { promise } from "zod";
 
 export default NextAuth({
-  session: { strategy: "jwt" },
+  // session: { strategy: "jwt" },
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -21,12 +22,16 @@ export default NextAuth({
             username: credentials.username,
           },
         });
-        console.log("PRISMA USER: ", user);
         if (!user) return null;
-        console.log("Found User");
 
         return user;
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token, user }) {
+      const sessionUser = { ...session.user, ...user };
+      return Promise.resolve({ ...session, user: sessionUser });
+    },
+  },
 });

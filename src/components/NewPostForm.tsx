@@ -1,25 +1,53 @@
 import * as React from "react";
 import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import {
-  faImage,
-  faPaperclip,
-  faFileAudio,
-  faMicrophone,
-} from "@fortawesome/free-solid-svg-icons";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { trpc } from "../lib/trpc";
+import { useRef, useState } from "react";
+import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
-interface INewPostFormProps {}
+interface INewPostFormProps {
+  userId: string;
+}
 
-const NewPostForm: React.FunctionComponent<INewPostFormProps> = (props) => {
+const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
+  userId,
+}: INewPostFormProps) => {
+  const utils = trpc.useContext();
+  const createPostMutation = trpc.post.create.useMutation({
+    onSuccess: () => {
+      utils.post.getPostsByUserId.invalidate();
+    },
+  });
+
+  const [text, setText] = useState<string>("");
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutosizeTextArea(textAreaRef.current, text);
+
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+
+    setText(val);
+  };
+
+  const handleCreatePost = () => {
+    createPostMutation.mutate({ userId, text });
+  };
+
   return (
-    <div className="bg-white rounded-lg grow h-fit flex flex-col p-4 gap-4">
-      <div className="flex w-full items-center gap-4 ">
-        <Avatar className="w-16 h-16" />
-        <input
-          type="text"
-          className="outline-none border rounded-xl px-2 py-1 w-full h-fit"
-          placeholder="What's on your mind..."
+    <div className="bg-white rounded-lg grow h-fit flex flex-col p-4 gap-2">
+      <div className="w-full flex flex-wrap items-center gap-4 ">
+        <Avatar className="w-12 h-12 mb-2" />
+
+        <textarea
+          id="review-text"
+          onChange={handleChange}
+          placeholder="What's on your mind?"
+          ref={textAreaRef}
+          rows={1}
+          value={text}
+          className="w-full outline-none resize-none"
         />
       </div>
       <hr />
@@ -28,12 +56,15 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = (props) => {
           <button className="flex gap-2 items-center">
             <FontAwesomeIcon icon={faImage} /> Image
           </button>
-          <button className="flex gap-2 items-center">
+          {/* <button className="flex gap-2 items-center">
             <FontAwesomeIcon icon={faPaperclip} />
             Attachment
-          </button>
+          </button> */}
         </div>
-        <button className="bg-blue-600 text-white font-semibold px-4 py-1 rounded-xl">
+        <button
+          onClick={handleCreatePost}
+          className="bg-blue-600 text-white font-semibold px-4 py-1 rounded-xl"
+        >
           POST
         </button>
       </div>

@@ -6,7 +6,7 @@ interface IProfileBoxProps {}
 
 const ProfileBox: React.FunctionComponent<IProfileBoxProps> = (props) => {
   return (
-    <div className="flex flex-col gap-6 bg-white p-6 rounded w-96">
+    <div className="flex flex-col gap-6 bg-white p-6 rounded w-72">
       <div className="flex gap-4 items-center">
         <Avatar className="w-20 h-20" />
         <div>

@@ -9,22 +9,19 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 
-interface IPostProps {}
+interface IPostProps {
+  text: string;
+}
 
-const Post: React.FunctionComponent<IPostProps> = (props) => {
+const Post: React.FunctionComponent<IPostProps> = ({ text }: IPostProps) => {
   return (
     <div className="bg-white p-8 rounded-lg flex flex-col gap-4">
       <div className="flex items-center gap-4 font-semibold">
         <Avatar className="w-14 h-14" />
         <p>Noel Vega</p>
       </div>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt non
-        necessitatibus placeat praesentium quasi enim, ducimus tenetur,
-        repellendus nam qui veritatis exercitationem! Consectetur quis rem
-        quaerat nostrum, earum hic temporibus!
-      </p>
-      <div className="w-full h-72 relative rounded-lg overflow-hidden">
+      <p>{text}</p>
+      {/* <div className="w-full h-72 relative rounded-lg overflow-hidden">
         <Image
           src="/Image-1.jfif"
           alt="post image"
@@ -32,16 +29,16 @@ const Post: React.FunctionComponent<IPostProps> = (props) => {
           layout="fill"
           objectFit="cover"
         />
-      </div>
+      </div> */}
       <hr />
-      <div className="flex justify-evenly">
+      <div className="flex justify-evenly text-slate-400">
         <button className="flex gap-4 items-center">
           <FontAwesomeIcon icon={faThumbsUp} /> Like
         </button>
-        <button className="flex gap-4 items-center">
+        {/* <button className="flex gap-4 items-center">
           <FontAwesomeIcon icon={faMessage} />
           Comment
-        </button>
+        </button> */}
         <button className="flex gap-4 items-center">
           <FontAwesomeIcon icon={faShare} />
           Share
