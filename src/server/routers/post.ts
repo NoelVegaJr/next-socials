@@ -10,7 +10,7 @@ export const postRouter = router({
       console.log("trpc post router userId: ", userId);
       const userPosts = await prisma.post.findMany({
         where: { userId },
-        include: { likes: true },
+        include: { likes: true, comments: true },
       });
       console.log("trpc post router: ", userPosts);
       return userPosts;
@@ -50,6 +50,26 @@ export const postRouter = router({
       await prisma.postLike.delete({
         where: { id: likeId },
       });
+    }),
+  newComment: procedure
+    .input(
+      z.object({ postId: z.string(), userId: z.string(), text: z.string() })
+    )
+    .mutation(async ({ input }) => {
+      const { postId, userId, text } = input;
+      await prisma.postComment.create({
+        data: { postId, userId, text, date: new Date() },
+      });
+    }),
+  getCommentCountByPostId: procedure
+    .input(z.object({ postId: z.string() }))
+    .query(async ({ input }) => {
+      const { postId } = input;
+      const comments = await prisma.postComment.findMany({
+        where: { postId },
+      });
+
+      return comments.length;
     }),
 });
 

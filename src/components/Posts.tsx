@@ -29,10 +29,11 @@ const Posts: React.FunctionComponent<IPostsProps> = ({
             <li key={post.id}>
               <Post
                 id={post.id}
+                userId={userId}
                 text={post.text}
                 date={post.date}
                 likes={post.likes}
-                userId={userId}
+                comments={post.comments}
               />
             </li>
           );

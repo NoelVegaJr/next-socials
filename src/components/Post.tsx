@@ -12,6 +12,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useState } from "react";
 import ReplyModal from "./ReplyModal";
 import Modal from "./Modal";
+import NewCommentForm from "./NewCommentForm";
 
 interface IPostProps {
   id: string;
@@ -19,6 +20,7 @@ interface IPostProps {
   date: string;
   likes: { id: string; postId: string; userId: string }[];
   userId: string;
+  comments: any[];
 }
 
 const Post: React.FunctionComponent<IPostProps> = ({
@@ -27,6 +29,7 @@ const Post: React.FunctionComponent<IPostProps> = ({
   date,
   likes,
   userId,
+  comments,
 }: IPostProps) => {
   const utils = trpc.useContext();
   const likeMutation = trpc.post.like.useMutation({
@@ -41,7 +44,7 @@ const Post: React.FunctionComponent<IPostProps> = ({
   });
 
   const [isReplying, setIsReplying] = useState<boolean>(false);
-
+  const [isViewingComments, setIsViewingComments] = useState<boolean>(false);
   const currentDate = new Date().getTime();
   const postDate = new Date(date).getTime();
   const minutesSincePosted = (currentDate - postDate) / 60000;
@@ -58,6 +61,8 @@ const Post: React.FunctionComponent<IPostProps> = ({
       unlikeMutation.mutate({ likeId: like.id });
     }
   };
+
+  const handleViewComments = () => {};
   return (
     <>
       <div className="bg-white p-8 rounded-lg flex flex-col gap-4">
@@ -96,12 +101,17 @@ const Post: React.FunctionComponent<IPostProps> = ({
             />
             {likes.length > 0 && likes.length}
           </button>
-          <button
-            className="flex gap-4 items-center"
-            onClick={() => setIsReplying(!isReplying)}
-          >
-            <FontAwesomeIcon icon={faMessage} />
-          </button>
+          <div className="flex gap-4">
+            <button
+              className="flex gap-4 items-center"
+              onClick={() => setIsReplying(!isReplying)}
+            >
+              <FontAwesomeIcon icon={faMessage} />
+            </button>
+            <button onClick={() => setIsViewingComments(!isViewingComments)}>
+              {comments.length > 0 && <p>{comments.length}</p>}
+            </button>
+          </div>
           <button className="flex gap-4 items-center">
             <FontAwesomeIcon icon={faShare} />
             Share
@@ -117,12 +127,19 @@ const Post: React.FunctionComponent<IPostProps> = ({
       </div> */}
         {isReplying && (
           <div className="flex items-center gap-6 w-full">
-            <input
-              type="text"
-              placeholder="Write a comment..."
-              className="outline-none border px-2 py-1 rounded-xl grow"
+            <NewCommentForm
+              postId={id}
+              userId={userId}
+              close={() => setIsReplying(false)}
             />
           </div>
+        )}
+        {isViewingComments && (
+          <ul>
+            {comments?.map((comment) => {
+              return <li key={comment.id}>{comment.text}</li>;
+            })}
+          </ul>
         )}
       </div>
     </>
