@@ -10,9 +10,10 @@ export const postRouter = router({
       console.log("trpc post router userId: ", userId);
       const userPosts = await prisma.post.findMany({
         where: { userId },
-        include: { likes: true, comments: true },
+        include: { likes: true, comments: { include: { user: true } } },
       });
       console.log("trpc post router: ", userPosts);
+      console.log(userPosts[0].comments);
       return userPosts;
     }),
   create: procedure

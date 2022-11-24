@@ -24,6 +24,16 @@ export async function getServerSideProps(context: NextPageContext) {
     };
   }
 
+  if (!session.user.username) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/user-details",
+      },
+      props: {},
+    };
+  }
+
   return {
     props: {
       authSession: session,
@@ -44,11 +54,11 @@ const Feed: React.FunctionComponent<IFeedProps> = ({
         <>
           <div className="px-20 flex gap-8">
             <div>
-              <ProfileBox />
+              <ProfileBox avatarSrc={authSession?.user?.image} />
               {/* <FriendsList /> */}
             </div>
             <div className="flex flex-col gap-4 grow">
-              <NewPostForm userId={userId} />
+              <NewPostForm avatarSrc={authSession.user.image} userId={userId} />
               <Posts userId={userId} />
             </div>
           </div>

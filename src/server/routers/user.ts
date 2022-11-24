@@ -1,17 +1,36 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
+import prisma from "../../lib/prismadb";
 
 export const userRouter = router({
-  hello: procedure
+  usernameExists: procedure
     .input(
       z.object({
-        text: z.string(),
+        username: z.string(),
       })
     )
-    .query(({ input }) => {
-      return {
-        greeting: `hello ${input.text}`,
-      };
+    .query(async ({ input }) => {
+      const { username } = input;
+
+      const user = await prisma.user.findUnique({ where: { username } });
+
+      if (user) {
+        return true;
+      } else {
+        return false;
+      }
+    }),
+  updateUsername: procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        username: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { username, userId } = input;
+
+      await prisma.user.update({ where: { id: userId }, data: { username } });
     }),
 });
 

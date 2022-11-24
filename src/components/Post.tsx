@@ -13,6 +13,8 @@ import { useState } from "react";
 import ReplyModal from "./ReplyModal";
 import Modal from "./Modal";
 import NewCommentForm from "./NewCommentForm";
+import Comment from "../components/Comment";
+import { dateFormatter } from "../lib/dateFormatter";
 
 interface IPostProps {
   id: string;
@@ -45,10 +47,10 @@ const Post: React.FunctionComponent<IPostProps> = ({
 
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [isViewingComments, setIsViewingComments] = useState<boolean>(false);
-  const currentDate = new Date().getTime();
-  const postDate = new Date(date).getTime();
-  const minutesSincePosted = (currentDate - postDate) / 60000;
-
+  // const currentDate = new Date().getTime();
+  // const postDate = new Date(date).getTime();
+  // const minutesSincePosted = (currentDate - postDate) / 60000;
+  console.log(comments);
   likes.find((like) => like.userId === userId);
 
   const handleLikePost = () => {
@@ -70,7 +72,7 @@ const Post: React.FunctionComponent<IPostProps> = ({
           <Avatar className="w-14 h-14" />
           <p>Noel Vega</p>
 
-          {minutesSincePosted >= 1 && minutesSincePosted < 60 && (
+          {/* {minutesSincePosted >= 1 && minutesSincePosted < 60 && (
             <p className="text-xs"> {Math.round(minutesSincePosted)} min ago</p>
           )}
           {minutesSincePosted < 1 && (
@@ -78,7 +80,8 @@ const Post: React.FunctionComponent<IPostProps> = ({
               {" "}
               {Math.round((currentDate - postDate) / 1000)} secs ago
             </p>
-          )}
+          )} */}
+          <p className="text-xs">{dateFormatter(new Date(date).getTime())}</p>
         </div>
         <p>{text}</p>
         {/* <div className="w-full h-72 relative rounded-lg overflow-hidden">
@@ -135,9 +138,19 @@ const Post: React.FunctionComponent<IPostProps> = ({
           </div>
         )}
         {isViewingComments && (
-          <ul>
+          <ul className="flex flex-col gap-2 py-2">
             {comments?.map((comment) => {
-              return <li key={comment.id}>{comment.text}</li>;
+              // return <li key={comment.id}>{comment.text}</li>;
+              return (
+                <li key={comment.id}>
+                  <Comment
+                    avatarSrc={"/profile.jpg"}
+                    username={comment.user.username}
+                    text={comment.text}
+                    date={comment.date}
+                  />
+                </li>
+              );
             })}
           </ul>
         )}

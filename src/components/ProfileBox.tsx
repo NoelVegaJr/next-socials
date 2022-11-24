@@ -2,13 +2,17 @@ import * as React from "react";
 import Image from "next/image";
 import Avatar from "./Avatar";
 
-interface IProfileBoxProps {}
+interface IProfileBoxProps {
+  avatarSrc?: string | null;
+}
 
-const ProfileBox: React.FunctionComponent<IProfileBoxProps> = (props) => {
+const ProfileBox: React.FunctionComponent<IProfileBoxProps> = ({
+  avatarSrc,
+}: IProfileBoxProps) => {
   return (
     <div className="flex flex-col gap-6 bg-white p-6 rounded w-72">
       <div className="flex gap-4 items-center">
-        <Avatar className="w-20 h-20" />
+        <Avatar src={avatarSrc} className="w-20 h-20" />
         <div>
           <p className="font-bold text-xl">Noel Vega</p>
           <p>365 friends</p>

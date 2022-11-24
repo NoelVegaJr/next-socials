@@ -3,15 +3,17 @@ import Image from "next/image";
 
 interface IAvatarProps {
   className: string;
+  src?: string | null;
 }
 
 const Avatar: React.FunctionComponent<IAvatarProps> = ({
   className,
+  src,
 }: IAvatarProps) => {
   return (
     <div className={`${className} relative`}>
       <Image
-        src="/profile.jpg"
+        src={src ?? "/profile.jpg"}
         alt="profile image"
         className="rounded-full"
         layout="fill"

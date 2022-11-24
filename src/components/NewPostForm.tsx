@@ -8,10 +8,12 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface INewPostFormProps {
   userId: string;
+  avatarSrc?: string | null;
 }
 
 const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
   userId,
+  avatarSrc,
 }: INewPostFormProps) => {
   const utils = trpc.useContext();
   const createPostMutation = trpc.post.create.useMutation({
@@ -38,7 +40,7 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
   return (
     <div className="bg-white rounded-lg grow h-fit flex flex-col p-4 gap-2">
       <div className="w-full flex flex-wrap items-center gap-4 ">
-        <Avatar className="w-12 h-12 mb-2" />
+        <Avatar src={avatarSrc} className="w-12 h-12 mb-2" />
 
         <textarea
           id="review-text"
