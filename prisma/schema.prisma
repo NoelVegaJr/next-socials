@@ -46,6 +46,8 @@ model User {
   postComments PostComment[]
   accounts      Account[]
   sessions      Session[]
+  followers Follower[] @relation("user_follower")
+  following Follower[] @relation("user_following")
 }
 
 model VerificationToken {
@@ -83,4 +85,12 @@ model PostComment {
   date DateTime
   post          Post @relation(fields: [postId], references: [id])
   user          User @relation(fields: [userId], references: [id])
+}
+
+model Follower {
+  id              String    @id @default(cuid())
+  followingUserId String
+  followerUserId  String
+  follower          User @relation("user_follower", fields: [followingUserId], references: [id])
+  following          User @relation("user_following", fields: [followerUserId], references: [id])
 }

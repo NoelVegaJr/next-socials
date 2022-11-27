@@ -13,5 +13,17 @@ export const dateFormatter = (from: number): string => {
     return Math.round(seconds / 3600) + " hours ago";
   }
 
-  return new Date(from).toString();
+  if (seconds / 60 < 525600) {
+    return new Date(from).toLocaleDateString("en-us", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }
+
+  return new Date(from).toLocaleDateString("en-us", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 };

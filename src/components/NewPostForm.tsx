@@ -18,7 +18,7 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
   const utils = trpc.useContext();
   const createPostMutation = trpc.post.create.useMutation({
     onSuccess: () => {
-      utils.post.getPostsByUserId.invalidate();
+      utils.post.getHomePosts.invalidate();
     },
   });
 
@@ -34,6 +34,7 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
   };
 
   const handleCreatePost = () => {
+    setText("");
     createPostMutation.mutate({ userId, text });
   };
 

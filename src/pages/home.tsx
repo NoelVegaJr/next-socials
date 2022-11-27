@@ -44,22 +44,20 @@ export async function getServerSideProps(context: NextPageContext) {
 const Feed: React.FunctionComponent<IFeedProps> = ({
   authSession,
 }: IFeedProps) => {
-  console.log("auth session", authSession);
   const userId = authSession?.user.id;
+
+  const posts = trpc.post.getHomePosts.useQuery({ userId });
 
   return (
     <div className="min-h-screen w-full bg-slate-100">
-      <Navbar />
+      <Navbar userId={userId} />
       {authSession && (
         <>
           <div className="px-20 flex gap-8">
-            <div>
-              <ProfileBox avatarSrc={authSession?.user?.image} />
-              {/* <FriendsList /> */}
-            </div>
+            <div>{/* <FriendsList /> */}</div>
             <div className="flex flex-col gap-4 grow">
               <NewPostForm avatarSrc={authSession.user.image} userId={userId} />
-              <Posts userId={userId} />
+              {posts.data && <Posts posts={posts.data} userId={userId} />}
             </div>
           </div>
         </>

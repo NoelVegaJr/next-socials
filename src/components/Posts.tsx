@@ -5,30 +5,40 @@ import Post from "./Post";
 
 interface IPostsProps {
   userId: string;
+  posts: any;
 }
 
 const Posts: React.FunctionComponent<IPostsProps> = ({
   userId,
+  posts,
 }: IPostsProps) => {
-  const getPosts = trpc.post.getPostsByUserId.useQuery({
-    userId,
-  });
-  const [posts, setPosts] = useState<any[]>();
+  // const getPosts = trpc.post.getPostsByUserId.useQuery({
+  //   userId,
+  // });
 
-  React.useEffect(() => {
-    if (getPosts.data) {
-      setPosts(getPosts.data);
-    }
-  }, [getPosts.data]);
+  // const getPosts = trpc.post.getHomePosts.useQuery({
+  //   userId,
+  //   posts
+  // });
+  // const [posts, setPosts] = useState<any[]>();
 
+  // React.useEffect(() => {
+  //   if (getPosts.data) {
+  //     setPosts(getPosts.data as any[]);
+  //   }
+  // }, [getPosts.data]);
+  // console.log(posts);
   return (
     <>
       <ul className="flex flex-col gap-4">
-        {posts?.map((post) => {
+        {posts?.map((post: any) => {
           return (
             <li key={post.id}>
               <Post
                 id={post.id}
+                name={post.user.name}
+                username={post.user.username}
+                image={post.user.image}
                 userId={userId}
                 text={post.text}
                 date={post.date}

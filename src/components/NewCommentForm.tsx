@@ -17,9 +17,10 @@ const NewCommentForm: React.FunctionComponent<INewCommentFormProps> = ({
   const utils = trpc.useContext();
   const newCommentMutation = trpc.post.newComment.useMutation({
     onSuccess: () => {
-      utils.post.getPostsByUserId.invalidate();
+      utils.post.getHomePosts.invalidate();
     },
   });
+  console.log("comment author", userId);
   const [text, setText] = useState<string>("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 

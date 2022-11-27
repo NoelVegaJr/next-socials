@@ -12,7 +12,7 @@ export async function getServerSideProps(context: NextPageContext) {
     return {
       redirect: {
         permanent: false,
-        destination: "feed",
+        destination: "home",
       },
       props: {},
     };

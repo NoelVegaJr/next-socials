@@ -7,14 +7,79 @@ export const postRouter = router({
     .input(z.object({ userId: z.string() }))
     .query(async ({ input }) => {
       const { userId } = input;
-      console.log("trpc post router userId: ", userId);
       const userPosts = await prisma.post.findMany({
         where: { userId },
-        include: { likes: true, comments: { include: { user: true } } },
+        include: {
+          user: true,
+          likes: true,
+          comments: { include: { user: true } },
+        },
       });
-      console.log("trpc post router: ", userPosts);
-      console.log(userPosts[0].comments);
       return userPosts;
+    }),
+  getPostsByUsername: procedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input }) => {
+      const { username } = input;
+      const userPosts = await prisma.post.findMany({
+        where: { user: { username } },
+        include: {
+          user: true,
+          likes: true,
+          comments: { include: { user: true } },
+        },
+      });
+      return userPosts;
+    }),
+  getHomePosts: procedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const { userId } = input;
+
+      const following = await prisma.follower.findMany({
+        where: { followerUserId: userId },
+        select: {
+          followingUserId: true,
+        },
+      });
+
+      const posts = await prisma.post.findMany({
+        where: {
+          userId: {
+            in: [...following.map((f) => f.followingUserId), userId],
+          },
+        },
+        include: {
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              date: "desc",
+            },
+          },
+          likes: true,
+          user: {
+            select: {
+              username: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+        orderBy: {
+          date: "desc",
+        },
+      });
+
+      return posts;
     }),
   create: procedure
     .input(
