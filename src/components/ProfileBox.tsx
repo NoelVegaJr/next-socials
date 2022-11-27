@@ -7,6 +7,7 @@ import { trpc } from "../lib/trpc";
 import FollowButton from "./FollowButton";
 import { useState } from "react";
 import Modal from "./Modal";
+import EditProfileForm from "./EditProfileForm";
 
 interface IProfileBoxProps {
   user: any;
@@ -48,42 +49,10 @@ const ProfileBox: React.FunctionComponent<IProfileBoxProps> = ({
         </div>
         {editingProfile && (
           <Modal close={() => setEditingProfile(false)}>
-            <div className="bg-slate-800 text-white rounded-lg p-4">
-              <form>
-                <div className="mb-8 flex justify-between">
-                  <button>
-                    <Avatar src={user.image} className="w-32 h-32" />
-                  </button>
-                  <button className="self-start bg-slate-300 text-black px-6 py-1 rounded-3xl font-semibold">
-                    Save
-                  </button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="border rounded p-1 px-4">
-                    <p>Name</p>
-                    <input
-                      type="text"
-                      className="w-full outline-none bg-transparent text-white"
-                    />
-                  </div>
-                  <div className="border rounded p-1 px-4">
-                    <p>Bio</p>
-                    <input
-                      type="text"
-                      className="w-full outline-none bg-transparent text-white"
-                    />
-                  </div>
-
-                  <div className="border rounded p-1 px-4">
-                    <p>Website</p>
-                    <input
-                      type="text"
-                      className="w-full outline-none bg-transparent text-white"
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
+            <EditProfileForm
+              user={user}
+              close={() => setEditingProfile(false)}
+            />
           </Modal>
         )}
 

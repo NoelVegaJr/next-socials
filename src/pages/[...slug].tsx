@@ -53,7 +53,10 @@ const ProfilePage: React.FunctionComponent<IProfilePageProps> = ({
   return (
     <div className="min-h-screen w-full  flex">
       {/* <Navbar userId={authSession?.user.id} /> */}
-      <SideNav username={authSession?.user.username} />
+      <SideNav
+        userId={authSession?.user.id}
+        username={authSession?.user.username}
+      />
 
       {user.data && (
         <div className=" flex flex-col  w-full">

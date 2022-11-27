@@ -43,7 +43,7 @@ model User {
   image         String?
   joinDate DateTime?
   website String?
-  Bio String?
+  bio String?
   posts Post[]
   likedPosts PostLike[]
   postComments PostComment[]

@@ -44,11 +44,13 @@ const Post: React.FunctionComponent<IPostProps> = ({
   const likeMutation = trpc.post.like.useMutation({
     onSuccess: () => {
       utils.post.getHomePosts.invalidate();
+      utils.user.getUserByUsername.invalidate();
     },
   });
   const unlikeMutation = trpc.post.unlike.useMutation({
     onSuccess: () => {
       utils.post.getHomePosts.invalidate();
+      utils.user.getUserByUsername.invalidate();
     },
   });
 

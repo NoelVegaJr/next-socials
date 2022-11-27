@@ -4,8 +4,7 @@ import { trpc } from "../lib/trpc";
 import { Puff } from "react-loader-spinner";
 import { getSession } from "next-auth/react";
 import { NextPageContext } from "next";
-import { Session } from "next-auth";
-
+import { useRouter } from "next/router";
 interface IUserNameFormProps {
   userId: string;
 }
@@ -42,11 +41,16 @@ export async function getServerSideProps(context: NextPageContext) {
 const UserNameForm: React.FunctionComponent<IUserNameFormProps> = ({
   userId,
 }: IUserNameFormProps) => {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
 
-  const updateUsernameMutation = trpc.user.updateUsername.useMutation();
+  const updateUsernameMutation = trpc.user.updateUsername.useMutation({
+    onSuccess: () => {
+      router.push("/home");
+    },
+  });
 
   const { refetch } = trpc.user.usernameExists.useQuery({
     username,

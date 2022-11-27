@@ -40,8 +40,7 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
 
   return (
     <div className="bg-white h-fit flex flex-col p-4 gap-2 border-b-2 ">
-      <p className="font-bold text-xl pb-4">Home</p>
-      <div className="w-full flex  items-center gap-4 ">
+      <div className=" flex  items-center gap-4 ">
         <Avatar src={avatarSrc} className="w-12 h-12 mb-2" />
 
         <textarea
@@ -51,20 +50,15 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
           ref={textAreaRef}
           rows={1}
           value={text}
-          className="w-full outline-none resize-none"
+          className="grow outline-none resize-none"
         />
       </div>
-      <hr />
-      <div className="flex  justify-between gap-16 text-slate-400">
-        <div className="flex gap-10">
+      <div className="flex  justify-end gap-16 text-slate-400">
+        {/* <div className="flex gap-10">
           <button className="flex gap-2 items-center">
             <FontAwesomeIcon icon={faImage} /> Image
           </button>
-          {/* <button className="flex gap-2 items-center">
-            <FontAwesomeIcon icon={faPaperclip} />
-            Attachment
-          </button> */}
-        </div>
+        </div> */}
         <button
           onClick={handleCreatePost}
           className="bg-blue-600 text-white font-semibold px-4 py-1 rounded-xl"

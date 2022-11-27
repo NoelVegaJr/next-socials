@@ -49,19 +49,30 @@ const Feed: React.FunctionComponent<IFeedProps> = ({
   const userId = authSession?.user.id;
 
   const posts = trpc.post.getHomePosts.useQuery({ userId });
+  const newConnections = trpc.user.listNewConnections.useQuery({
+    userId,
+    count: 3,
+  });
 
   return (
     <div className="min-h-screen w-full  flex">
-      <SideNav username={authSession?.user.username} />
-      {authSession && (
+      {authSession && newConnections.data && (
         <>
+          <SideNav userId={userId} username={authSession?.user.username} />
           <div className="flex flex-col  grow border-r-2">
+            <p className="font-bold text-xl p-4">Home</p>
+
             <NewPostForm avatarSrc={authSession.user.image} userId={userId} />
             {posts.data && <Posts posts={posts.data} userId={userId} />}
           </div>
           <div className="flex flex-col px-4">
             <SearchBar userId={userId} />
-            <ConnectWithBox />
+            {newConnections.data.length > 0 && (
+              <ConnectWithBox
+                connections={newConnections.data}
+                userId={userId}
+              />
+            )}
           </div>
         </>
       )}

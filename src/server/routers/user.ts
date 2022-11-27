@@ -20,6 +20,23 @@ export const userRouter = router({
         return false;
       }
     }),
+  updateUserProfile: procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        name: z.string(),
+        bio: z.string(),
+        website: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { userId, name, bio, website } = input;
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { name, bio, website },
+      });
+    }),
   updateUsername: procedure
     .input(
       z.object({
@@ -114,6 +131,44 @@ export const userRouter = router({
       });
 
       return users;
+    }),
+  listNewConnections: procedure
+    .input(z.object({ userId: z.string(), count: z.number() }))
+    .query(async ({ input }) => {
+      const { userId, count } = input;
+      const following = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          following: {
+            select: {
+              followingUserId: true,
+            },
+          },
+        },
+      });
+
+      // following.following.map((f) => f.followingUserId);
+      const newConnections = await prisma.user.findMany({
+        where: {
+          id: {
+            notIn: following
+              ? [...following.following.map((f) => f.followingUserId), userId]
+              : [userId],
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          image: true,
+          bio: true,
+        },
+        take: count,
+      });
+
+      console.log(newConnections);
+
+      return newConnections;
     }),
   follow: procedure
     .input(
