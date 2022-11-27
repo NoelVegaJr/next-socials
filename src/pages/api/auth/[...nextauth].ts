@@ -13,20 +13,20 @@ export default NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-    CredentialsProvider({
-      credentials: {},
-      async authorize(credentials, req) {
-        if (!credentials) return null;
-        const user = await prisma.user.findUnique({
-          where: {
-            username: credentials.username,
-          },
-        });
-        if (!user) return null;
+    // CredentialsProvider({
+    //   credentials: {},
+    //   async authorize(credentials, req) {
+    //     if (!credentials) return null;
+    //     const user = await prisma.user.findUnique({
+    //       where: {
+    //         username: credentials.username ,
+    //       },
+    //     });
+    //     if (!user) return null;
 
-        return user;
-      },
-    }),
+    //     return user;
+    //   },
+    // }),
   ],
   secret: process.env.NEXT_AUTH_SECRET,
   callbacks: {
