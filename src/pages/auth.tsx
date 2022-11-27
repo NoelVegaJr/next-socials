@@ -39,7 +39,7 @@ const AuthPage = ({ authSession }: IAuthPageProps) => {
       </div>
       <div className="flex justify-center items-center grow bg-slate-100">
         <div className="max-w-xl grow border p-6 rounded-xl flex flex-col gap-6 bg-white">
-          {authForm === "Sign In" ? <SignInForm /> : <SignUpForm />}
+          {/* {authForm === "Sign In" ? <SignInForm /> : <SignUpForm close={} />} */}
           <p
             className="cursor-pointer text-blue-500"
             onClick={(e) => setAuthForm(e.currentTarget.innerText)}
