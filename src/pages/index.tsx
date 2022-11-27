@@ -43,7 +43,7 @@ export default function Home() {
               <SignInForm />
             </div>
           </div>
-          <div>
+          {/* <div>
             <button
               onClick={() => {
                 setCreateNewAccount(true);
@@ -52,7 +52,7 @@ export default function Home() {
             >
               Create New Account
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       {createNewAccount && (

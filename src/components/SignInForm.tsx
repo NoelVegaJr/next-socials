@@ -29,7 +29,7 @@ const SignInForm = () => {
       }}
     >
       <Form className="flex flex-col gap-4 ">
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <Field
             name="username"
             type="text"
@@ -57,12 +57,12 @@ const SignInForm = () => {
           className=" bg-blue-500 text-white px-6 p-2 rounded"
         >
           Sign In
-        </button>
-        <div className="flex items-center gap-2">
+        </button> */}
+        {/* <div className="flex items-center gap-2">
           <div className="h-0.5 bg-slate-300 grow" />
           <p className="text-center font-semibold text-slate-300">Or</p>
           <div className="h-0.5 bg-slate-300 grow" />
-        </div>
+        </div> */}
         <button
           className="flex items-center gap-2 justify-center text-white bg-slate-600 p-2 rounded"
           onClick={() => signIn("google")}
