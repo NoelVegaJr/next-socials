@@ -84,6 +84,9 @@ export const userRouter = router({
               likes: true,
               user: true,
             },
+            orderBy: {
+              date: "desc",
+            },
           },
         },
       });
