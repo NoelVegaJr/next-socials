@@ -22,7 +22,7 @@ const ProfileBox: React.FunctionComponent<IProfileBoxProps> = ({
   return (
     <div className="flex flex-col gap-6 border-b-2 bg-white rounded w-full">
       <div className=" gap-4 items-center">
-        <div className="bg-slate-500 w-full h-52" />
+        <div className="bg-slate-500 w-full h-60" />
         <div className="relative ">
           <div className="absolute -top-16 left-10 h-fit w-fit p-1 bg-white rounded-full">
             <Avatar src={user.image} className="w-32 h-32" />

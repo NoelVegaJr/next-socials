@@ -2,12 +2,14 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
 import SearchResults from "./SearchResults";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-interface INavBarProps {
+interface ISearchBarProps {
   userId: string;
 }
 
-const Navbar: React.FunctionComponent<INavBarProps> = ({ userId }) => {
+const SearchBar: React.FunctionComponent<ISearchBarProps> = ({ userId }) => {
   const [searchValue, setSearchValue] = useState("");
   const [isTypeing, setIsTypeing] = useState(false);
 
@@ -31,16 +33,18 @@ const Navbar: React.FunctionComponent<INavBarProps> = ({ userId }) => {
     };
   }, [searchValue]);
   return (
-    <div className="w-full h-16 bg-white items-center flex px-12  gap-20 mb-8">
-      <p className="text-blue-600 font-bold text-3xl">Code Fork</p>
+    <div className="w-full h-16 bg-white items-center flex   mb-1">
       <div className="flex flex-col ">
-        <input
-          type="text"
-          className="outline-none border rounded-xl px-2 py-1 w-96"
-          placeholder="Search"
-          value={searchValue}
-          onChange={(e) => handleChange(e.target.value)}
-        />
+        <div className="border rounded-xl px-2 py-1 w-96 flex gap-2 items-center">
+          <FontAwesomeIcon icon={faSearch} />
+          <input
+            type="text"
+            className="outline-none "
+            placeholder="Search Code Fork"
+            value={searchValue}
+            onChange={(e) => handleChange(e.target.value)}
+          />
+        </div>
         <div className="relative">
           {searchValue && !isTypeing && (
             <SearchResults userId={userId} search={searchValue} />
@@ -51,4 +55,4 @@ const Navbar: React.FunctionComponent<INavBarProps> = ({ userId }) => {
   );
 };
 
-export default Navbar;
+export default SearchBar;

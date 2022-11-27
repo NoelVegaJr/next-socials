@@ -2,7 +2,6 @@ import { NextPageContext } from "next";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import * as React from "react";
-import Navbar from "../components/NavBar";
 import Posts from "../components/Posts";
 import ProfileBox from "../components/ProfileBox";
 import SideNav from "../components/SideNav";

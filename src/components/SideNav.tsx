@@ -4,6 +4,7 @@ import {
   faUser,
   faEnvelope,
   faBell,
+  faPenToSquare,
 } from "@fortawesome/free-regular-svg-icons";
 
 import Link from "next/link";
@@ -18,6 +19,11 @@ const SideNav: React.FunctionComponent<ISideNavProps> = ({
   return (
     <nav className="h-screen p-8  border-r-2 ">
       <ul className="flex flex-col items-center gap-8">
+        <li>
+          <Link href="/">
+            <p className="text-blue-600 font-bold text-3xl">CF</p>
+          </Link>
+        </li>
         <li>
           <Link href="/">
             <svg
@@ -49,6 +55,14 @@ const SideNav: React.FunctionComponent<ISideNavProps> = ({
         <li>
           <Link href={`/${username}`}>
             <FontAwesomeIcon icon={faUser} className="text-3xl" />
+          </Link>
+        </li>
+        <li className="h-14 w-14 rounded-full bg-blue-400 flex justify-center items-center">
+          <Link href={`/${username}`}>
+            <FontAwesomeIcon
+              icon={faPenToSquare}
+              className="text-3xl text-white"
+            />
           </Link>
         </li>
       </ul>
