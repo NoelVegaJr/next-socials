@@ -42,6 +42,8 @@ model User {
   emailVerified DateTime?
   image         String?
   joinDate DateTime?
+  website String?
+  Bio String?
   posts Post[]
   likedPosts PostLike[]
   postComments PostComment[]
