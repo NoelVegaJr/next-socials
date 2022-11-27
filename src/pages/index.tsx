@@ -32,7 +32,7 @@ export default function Home() {
     <div className="h-screen w-full bg-slate-100 grid place-content-center">
       <div className="flex gap-20">
         <div className="w-1/2">
-          <p className="text-teal-400 font-bold text-3xl">Devy</p>
+          <p className="text-blue-600 font-bold text-3xl">Devy</p>
           <p className="text-2xl">
             Connect with friends, teamates and the world around you on Devy.
           </p>

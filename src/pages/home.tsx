@@ -6,6 +6,7 @@ import Navbar from "../components/NavBar";
 import NewPostForm from "../components/NewPostForm";
 import Posts from "../components/Posts";
 import ProfileBox from "../components/ProfileBox";
+import SideNav from "../components/SideNav";
 import { trpc } from "../lib/trpc";
 
 interface IFeedProps {
@@ -49,18 +50,16 @@ const Feed: React.FunctionComponent<IFeedProps> = ({
   const posts = trpc.post.getHomePosts.useQuery({ userId });
 
   return (
-    <div className="min-h-screen w-full bg-slate-100">
-      <Navbar userId={userId} />
+    <div className="min-h-screen w-full  flex">
+      {/* <Navbar userId={userId} /> */}
+      <SideNav username={authSession?.user.username} />
       {authSession && (
-        <>
-          <div className="px-20 flex gap-8">
-            <div>{/* <FriendsList /> */}</div>
-            <div className="flex flex-col gap-4 grow">
-              <NewPostForm avatarSrc={authSession.user.image} userId={userId} />
-              {posts.data && <Posts posts={posts.data} userId={userId} />}
-            </div>
-          </div>
-        </>
+        // <div className="px-20 flex gap-8">
+        <div className="flex flex-col  grow ">
+          <NewPostForm avatarSrc={authSession.user.image} userId={userId} />
+          {posts.data && <Posts posts={posts.data} userId={userId} />}
+        </div>
+        // </div>
       )}
     </div>
   );

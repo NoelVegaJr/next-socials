@@ -32,7 +32,7 @@ const Navbar: React.FunctionComponent<INavBarProps> = ({ userId }) => {
   }, [searchValue]);
   return (
     <div className="w-full h-16 bg-white items-center flex px-12  gap-20 mb-8">
-      <p className="text-teal-400 font-bold text-3xl">Devy</p>
+      <p className="text-blue-600 font-bold text-3xl">Code Fork</p>
       <div className="flex flex-col ">
         <input
           type="text"

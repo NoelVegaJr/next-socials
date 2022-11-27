@@ -39,8 +39,9 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg grow h-fit flex flex-col p-4 gap-2">
-      <div className="w-full flex flex-wrap items-center gap-4 ">
+    <div className="bg-white h-fit flex flex-col p-4 gap-2 border-b-2 ">
+      <p className="font-bold text-xl pb-4">Home</p>
+      <div className="w-full flex  items-center gap-4 ">
         <Avatar src={avatarSrc} className="w-12 h-12 mb-2" />
 
         <textarea

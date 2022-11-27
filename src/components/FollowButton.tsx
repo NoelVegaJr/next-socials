@@ -29,7 +29,7 @@ const FollowButton: React.FunctionComponent<IFollowButtonProps> = ({
   });
 
   return (
-    <div className="flex justify-end p-2">
+    <div className="">
       {isFollowing ? (
         <>
           {isHovering ? (

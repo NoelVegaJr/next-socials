@@ -30,7 +30,10 @@ export const userRouter = router({
     .mutation(async ({ input }) => {
       const { username, userId } = input;
 
-      await prisma.user.update({ where: { id: userId }, data: { username } });
+      await prisma.user.update({
+        where: { id: userId },
+        data: { username, joinDate: new Date() },
+      });
     }),
   searchUsersByUsername: procedure
     .input(z.object({ username: z.string() }))

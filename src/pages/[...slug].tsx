@@ -5,6 +5,7 @@ import * as React from "react";
 import Navbar from "../components/NavBar";
 import Posts from "../components/Posts";
 import ProfileBox from "../components/ProfileBox";
+import SideNav from "../components/SideNav";
 import { trpc } from "../lib/trpc";
 
 interface IProfilePageProps {
@@ -51,20 +52,20 @@ const ProfilePage: React.FunctionComponent<IProfilePageProps> = ({
   console.log(user);
 
   return (
-    <div className="min-h-screen w-full bg-slate-100">
-      <Navbar userId={authSession?.user.id} />
+    <div className="min-h-screen w-full  flex">
+      {/* <Navbar userId={authSession?.user.id} /> */}
+      <SideNav username={authSession?.user.username} />
+
       {user.data && (
-        <>
-          <div className="px-20 flex flex-col gap-8 w-full">
-            {user.data && (
-              <ProfileBox
-                loggedOnUserId={authSession?.user.id}
-                user={user.data}
-              />
-            )}
-            <Posts posts={user.data.posts} userId={user.data.id} />
-          </div>
-        </>
+        <div className=" flex flex-col  w-full">
+          {user.data && (
+            <ProfileBox
+              loggedOnUserId={authSession?.user.id}
+              user={user.data}
+            />
+          )}
+          <Posts posts={user.data.posts} userId={user.data.id} />
+        </div>
       )}
     </div>
   );

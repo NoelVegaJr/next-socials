@@ -6,6 +6,7 @@ import {
   faThumbsUp,
   faMessage,
   faShare,
+  faCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -72,21 +73,26 @@ const Post: React.FunctionComponent<IPostProps> = ({
   console.log(dateFormatter(new Date(date).getTime()));
   return (
     <>
-      <div className="bg-white p-8 rounded-lg flex flex-col gap-4">
-        <div className="flex items-center gap-4 font-semibold">
-          <Avatar src={image} className="w-14 h-14" />
+      <div className="bg-white p-4  flex flex-col border-b">
+        <div className="flex  gap-4 font-semibold pb-4">
+          <Avatar src={image} className="w-12 h-12" />
           <div className="flex flex-col">
             <div className="flex gap-4 items-center">
               <p>{name}</p>
+              <p className="text-xs">@{username}</p>
+              <FontAwesomeIcon
+                icon={faCircle}
+                className="text-slate-400"
+                width={4}
+              />
+
               <p className="text-xs">
                 {dateFormatter(new Date(date).getTime())}
               </p>
             </div>
-            <p className="text-xs">@{username}</p>
+            <p>{text}</p>
           </div>
         </div>
-        <p>{text}</p>
-        <hr />
         <div className="flex justify-evenly text-slate-400">
           <button className="flex gap-4 items-center" onClick={handleLikePost}>
             <FontAwesomeIcon
