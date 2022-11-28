@@ -1,3 +1,4 @@
+import Link from "next/link";
 import * as React from "react";
 import { dateFormatter } from "../lib/dateFormatter";
 import Avatar from "./Avatar";
@@ -25,12 +26,14 @@ const Comment: React.FunctionComponent<ICommentProps> = ({
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <p>{name}</p>
+                <Link href={`${username}`}>{name}</Link>
                 <p className="text-xs">
                   {dateFormatter(new Date(date).getTime())}
                 </p>
               </div>
-              <p className="text-xs">@{username}</p>
+              <Link href={`${username}`} className="text-xs">
+                @{username}
+              </Link>
             </div>
           </div>
           <p>{text}</p>

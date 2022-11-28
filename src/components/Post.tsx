@@ -16,6 +16,7 @@ import Modal from "./Modal";
 import NewCommentForm from "./NewCommentForm";
 import Comment from "../components/Comment";
 import { dateFormatter } from "../lib/dateFormatter";
+import Link from "next/link";
 
 interface IPostProps {
   id: string;
@@ -41,6 +42,8 @@ const Post: React.FunctionComponent<IPostProps> = ({
   comments,
 }: IPostProps) => {
   const utils = trpc.useContext();
+  const [hoveringOverLike, setHoveringOverLike] = useState(false);
+  const [hoveringOverComment, setHoveringOverComment] = useState(false);
   const likeMutation = trpc.post.like.useMutation({
     onSuccess: () => {
       utils.post.getHomePosts.invalidate();
@@ -56,19 +59,12 @@ const Post: React.FunctionComponent<IPostProps> = ({
 
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [isViewingComments, setIsViewingComments] = useState<boolean>(false);
-  // const currentDate = new Date().getTime();
-  // const postDate = new Date(date).getTime();
-  // const minutesSincePosted = (currentDate - postDate) / 60000;
-  console.log(comments);
-  likes?.find((like) => like.userId === userId);
 
   const handleLikePost = () => {
     const like = likes?.find((like) => like.userId === userId);
     if (!like) {
-      // like
       likeMutation.mutate({ postId: id, userId });
     } else {
-      // unlike
       unlikeMutation.mutate({ likeId: like.id });
     }
   };
@@ -76,12 +72,16 @@ const Post: React.FunctionComponent<IPostProps> = ({
   return (
     <>
       <div className="bg-white p-4  flex flex-col border-b">
-        <div className="flex  gap-4 font-semibold pb-4">
+        <div className="flex  gap-4 pb-4">
           <Avatar src={image} className="w-12 h-12" />
           <div className="flex flex-col">
             <div className="flex gap-4 items-center">
-              <p>{name}</p>
-              <p className="text-xs">@{username}</p>
+              <Link href={`${username}`} className="font-semibold">
+                {name}
+              </Link>
+              <Link href={`${username}`} className="text-xs">
+                @{username}
+              </Link>
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-slate-400"
@@ -96,15 +96,31 @@ const Post: React.FunctionComponent<IPostProps> = ({
           </div>
         </div>
         <div className="flex justify-evenly text-slate-400">
-          <button className="flex gap-4 items-center" onClick={handleLikePost}>
-            <FontAwesomeIcon
-              icon={faHeart}
-              className={`${
-                likes?.find((like) => like.userId === userId) && "text-red-600"
-              } stroke-red-600 hover:text-red-600 transition-all duration-200`}
-            />
-            {likes?.length > 0 && likes.length}
-          </button>
+          <div
+            className="flex gap-2"
+            onMouseOver={() => setHoveringOverLike(true)}
+            onMouseLeave={() => setHoveringOverLike(false)}
+          >
+            <button
+              className={`flex gap-4 justify-center items-center h-8 w-8 ${
+                hoveringOverLike && "bg-pink-600/20"
+              } rounded-full`}
+              onClick={handleLikePost}
+            >
+              <FontAwesomeIcon
+                icon={faHeart}
+                className={`${
+                  likes?.find((like) => like.userId === userId) &&
+                  "text-pink-700"
+                }  ${
+                  hoveringOverLike && "text-pink-700"
+                } transition-all duration-200`}
+              />
+            </button>
+            <button className={`${hoveringOverLike && "text-pink-600"}`}>
+              {likes?.length > 0 && likes.length}
+            </button>
+          </div>
           <div className="flex gap-4">
             <button
               className="flex gap-4 items-center"

@@ -52,6 +52,7 @@ model User {
   sessions      Session[]
   followers Follower[] @relation("user_follower")
   following Follower[] @relation("user_following")
+  conversations ConversationParticpant[]
 }
 
 model VerificationToken {
@@ -97,4 +98,19 @@ model Follower {
   followerUserId  String
   follower          User @relation("user_follower", fields: [followingUserId], references: [id])
   following          User @relation("user_following", fields: [followerUserId], references: [id])
+}
+
+model Conversation {
+  id              String    @id @default(cuid())
+  particpants          ConversationParticpant[] 
+  
+}
+
+model ConversationParticpant {
+  id              String    @id @default(cuid())
+  conversationId String
+  userId String
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
 }

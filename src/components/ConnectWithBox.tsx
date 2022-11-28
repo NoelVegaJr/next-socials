@@ -28,10 +28,12 @@ const ConnectWithBox: React.FunctionComponent<IConnectWithBoxProps> = ({
             <li key={conn.id} className="flex justify-between items-center">
               <div className="flex gap-2">
                 <Avatar src={conn.image} className="w-12 h-12" />
-                <div>
-                  <p className="font-semibold">{conn.name}</p>
-                  <p className="-mt-1">@{conn.username}</p>
-                </div>
+                <Link href={`${conn.username}`}>
+                  <div>
+                    <p className="font-semibold">{conn.name}</p>
+                    <p className="-mt-1">@{conn.username}</p>
+                  </div>
+                </Link>
               </div>
               <button
                 onClick={() =>

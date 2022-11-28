@@ -64,15 +64,21 @@ export const userRouter = router({
         where: { username: { contains: username } },
       });
 
+      console.log(users);
+
       return users;
     }),
   getUsersByUsername: procedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
       const { username } = input;
+      if (!username) {
+        console.log("no username");
+        return;
+      }
 
       const users = await prisma.user.findMany({
-        where: { username },
+        where: { username: { contains: username } },
         include: {
           followers: true,
           following: true,

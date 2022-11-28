@@ -3,6 +3,7 @@ import { trpc } from "../lib/trpc";
 import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import Link from "next/link";
 
 interface ISearchResultsProps {
   search: string;
@@ -27,10 +28,12 @@ const SearchResults: React.FunctionComponent<ISearchResultsProps> = ({
             className="list-none flex items-center justify-between gap-4"
             key={user.id}
           >
-            <div className="flex items-center gap-4">
-              <Avatar src={user.image} className="w-10 h-10" />
-              {user.username}
-            </div>
+            <Link href={`${user.username}`}>
+              <div className="flex items-center gap-4">
+                <Avatar src={user.image} className="w-10 h-10" />
+                {user.username}
+              </div>
+            </Link>
             <FontAwesomeIcon
               onClick={() =>
                 followMutation.mutate({
