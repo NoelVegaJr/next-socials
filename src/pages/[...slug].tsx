@@ -48,11 +48,9 @@ const ProfilePage: React.FunctionComponent<IProfilePageProps> = ({
   authSession,
 }: IProfilePageProps) => {
   const user = trpc.user.getUserByUsername.useQuery({ username });
-  console.log(user);
 
   return (
     <div className="min-h-screen w-full  flex">
-      {/* <Navbar userId={authSession?.user.id} /> */}
       <SideNav
         userId={authSession?.user.id}
         username={authSession?.user.username}

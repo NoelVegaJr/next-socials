@@ -1,10 +1,11 @@
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { trpc } from "../lib/trpc";
 import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faX } from "@fortawesome/free-solid-svg-icons";
 import uploadImage from "../lib/uploadImage";
+import Banner from "./Banner";
 
 interface IEditProfileFormProps {
   user: any;
@@ -19,21 +20,69 @@ const EditProfileForm: React.FunctionComponent<IEditProfileFormProps> = ({
   const updateProfile = trpc.user.updateUserProfile.useMutation({
     onSuccess: () => {
       utils.user.getUserByUsername.invalidate();
+      close();
     },
   });
   const [name, setName] = useState<string>(user.name);
   const [bio, setBio] = useState<string>(user.bio);
   const [website, setWebsite] = useState<string>(user.website);
-  const [hoveringOverAvatar, setHoveringOverAvatar] = useState(false);
   const inputAvatar = useRef<HTMLInputElement>(null);
+  const [avatarSrc, setAvatarSrc] = useState(user.image);
+  const [bannerSrc, setBannerSrc] = useState(user.banner);
   const inputBanner = useRef<HTMLInputElement>(null);
-  const [avatarFilePath, setAvatarFilePath] = useState<File | null>();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-  const handleUpdateProfile = async () => {
-    updateProfile.mutate({ userId: user.id, name, bio, website });
+  const handleBannerChange = async (file: File) => {
+    const base64 = await convertToBase64(file);
+    setBannerFile(file);
+    setBannerSrc(base64);
+  };
 
-    await uploadImage(avatarFilePath);
-    close();
+  const handleAvatarChange = async (file: File) => {
+    const base64 = await convertToBase64(file);
+    setAvatarFile(file);
+    setAvatarSrc(base64);
+  };
+
+  const convertToBase64 = (file: File) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      if (!file) {
+        alert("please select an image");
+      } else {
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+      }
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let avatarUrl;
+    let bannerUrl;
+
+    if (avatarFile) {
+      avatarUrl = await uploadImage(avatarFile);
+    }
+
+    if (bannerFile) {
+      bannerUrl = await uploadImage(bannerFile);
+    }
+
+    updateProfile.mutate({
+      userId: user.id,
+      name,
+      bio,
+      website,
+      avatar: avatarFile ? avatarUrl.secure_url : user.image,
+      banner: bannerFile ? bannerUrl.secure_url : user.banner,
+    });
   };
 
   return (
@@ -57,11 +106,12 @@ const EditProfileForm: React.FunctionComponent<IEditProfileFormProps> = ({
           </button>
         </div>
         <div>
-          <div className="bg-slate-600 w-full h-40 relative">
+          <div className=" w-full h-40 relative">
+            <Banner src={bannerSrc} className="w-full h-40" />
             <input
               type="file"
               id="file"
-              onChange={(e) => setAvatarFilePath(e.target.files![0])}
+              onChange={(e) => handleBannerChange(e.target.files![0])}
               ref={inputBanner}
               style={{ display: "none" }}
               accept="image/png, image/gif, image/jpeg"
@@ -76,11 +126,11 @@ const EditProfileForm: React.FunctionComponent<IEditProfileFormProps> = ({
           </div>
           <div className="mb-8 flex justify-between relative">
             <div className="absolute -top-14 left-4 p-1 bg-white rounded-full">
-              <Avatar src={user.image} className="w-28 h-28 " />
+              <Avatar src={avatarSrc} className="w-28 h-28 " />
               <input
                 type="file"
                 id="file"
-                onChange={(e) => setAvatarFilePath(e.target.files![0])}
+                onChange={(e) => handleAvatarChange(e.target.files![0])}
                 ref={inputAvatar}
                 style={{ display: "none" }}
                 accept="image/png, image/gif, image/jpeg"

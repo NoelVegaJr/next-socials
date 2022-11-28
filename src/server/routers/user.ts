@@ -27,14 +27,17 @@ export const userRouter = router({
         name: z.string(),
         bio: z.string(),
         website: z.string(),
+        avatar: z.string(),
+        banner: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const { userId, name, bio, website } = input;
+      const { userId, name, bio, website, avatar, banner } = input;
+      console.log("avatar: ", avatar);
 
       await prisma.user.update({
         where: { id: userId },
-        data: { name, bio, website },
+        data: { name, bio, website, image: avatar, banner },
       });
     }),
   updateUsername: procedure
@@ -165,8 +168,6 @@ export const userRouter = router({
         },
         take: count,
       });
-
-      console.log(newConnections);
 
       return newConnections;
     }),
