@@ -63,7 +63,7 @@ const ConnectPage: React.FunctionComponent<IConnectPageProps> = ({
     <div className="min-h-screen w-full  flex">
       {authSession && newConnections.data && (
         <>
-          <SideNav userId={userId} username={authSession?.user.username} />
+          <SideNav />
           <div className="flex flex-col grow border-r-2 ">
             <div className="flex items-center gap-10 py-6  px-4 ">
               <button className="h-8 w-8 hover:bg-slate-200 rounded-full transition-all ease-in-out duration-300 grid place-content-center">
@@ -122,7 +122,7 @@ const ConnectPage: React.FunctionComponent<IConnectPageProps> = ({
             )}
           </div>
           <div className="flex flex-col px-4">
-            <SearchBar userId={userId} />
+            <SearchBar />
           </div>
         </>
       )}
