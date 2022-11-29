@@ -2,9 +2,11 @@ import { NextPageContext } from "next";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import * as React from "react";
+import { useContext } from "react";
 import Posts from "../components/Posts";
 import ProfileBox from "../components/ProfileBox";
 import SideNav from "../components/SideNav";
+import { UserContext } from "../context/user-context";
 import { trpc } from "../lib/trpc";
 
 interface IProfilePageProps {
@@ -12,62 +14,55 @@ interface IProfilePageProps {
   authSession: Session;
 }
 
-export const getServerSideProps = async (context: NextPageContext) => {
-  console.log(context.query.slug);
+// export const getServerSideProps = async (context: NextPageContext) => {
+//   console.log(context.query.slug);
 
-  const session = await getSession(context);
-  if (!session) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
+//   const session = await getSession(context);
+//   if (!session) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: "/",
+//       },
+//       props: {},
+//     };
+//   }
 
-  if (!session.user.username) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/user-details",
-      },
-      props: {},
-    };
-  }
-  let username;
-  if (context.query.slug) {
-    username = context.query.slug[0];
-  }
+//   if (!session.user.username) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: "/user-details",
+//       },
+//       props: {},
+//     };
+//   }
+//   let username;
+//   if (context.query.slug) {
+//     username = context.query.slug[0];
+//   }
 
-  return { props: { username: username, authSession: session } };
-};
+//   return { props: { username: username, authSession: session } };
+// };
 
-const ProfilePage: React.FunctionComponent<IProfilePageProps> = ({
-  username,
-  authSession,
-}: IProfilePageProps) => {
-  const user = trpc.user.getUserByUsername.useQuery({ username });
+const ProfilePage: React.FunctionComponent<
+  IProfilePageProps
+> = ({}: IProfilePageProps) => {
+  const userCtx = useContext(UserContext);
+
+  const user = trpc.user.getUserByUsername.useQuery({
+    username: userCtx.username,
+  });
 
   return (
-    <div className="min-h-screen w-full  flex">
-      <SideNav
-        userId={authSession?.user.id}
-        username={authSession?.user.username}
-      />
-
+    <>
       {user.data && (
         <div className=" flex flex-col  w-full">
-          {user.data && (
-            <ProfileBox
-              loggedOnUserId={authSession?.user.id}
-              user={user.data}
-            />
-          )}
-          <Posts posts={user.data.posts} userId={user.data.id} />
+          {user.data && <ProfileBox user={user.data} />}
+          <Posts posts={user.data.posts} />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -11,7 +11,7 @@ const Avatar: React.FunctionComponent<IAvatarProps> = ({
   src,
 }: IAvatarProps) => {
   return (
-    <div className={`${className} relative`}>
+    <div className={`${className} relative rounded-full`}>
       <Image
         src={src ?? "/profile.jpg"}
         alt="profile image"

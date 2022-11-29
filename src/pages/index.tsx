@@ -1,9 +1,10 @@
 import { NextPageContext } from "next";
 import { getSession, signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Modal from "../components/Modal";
 import SignInForm from "../components/SignInForm";
 import SignUpForm from "../components/SignUpForm";
+import { UserContext } from "../context/user-context";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -43,16 +44,6 @@ export default function Home() {
               <SignInForm />
             </div>
           </div>
-          {/* <div>
-            <button
-              onClick={() => {
-                setCreateNewAccount(true);
-              }}
-              className="text-white bg-green-500 hover:bg-green-600 transition-all duration-300 py-2 w-full font-semibold rounded"
-            >
-              Create New Account
-            </button>
-          </div> */}
         </div>
       </div>
       {createNewAccount && (

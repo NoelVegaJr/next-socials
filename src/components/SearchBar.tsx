@@ -1,29 +1,24 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
 import SearchResults from "./SearchResults";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { UserContext } from "../context/user-context";
 
-interface ISearchBarProps {
-  userId: string;
-}
+interface ISearchBarProps {}
 
-const SearchBar: React.FunctionComponent<ISearchBarProps> = ({ userId }) => {
+const SearchBar: React.FunctionComponent<ISearchBarProps> = ({}) => {
   const [searchValue, setSearchValue] = useState("");
   const [isTypeing, setIsTypeing] = useState(false);
 
   const handleChange = async (text: string) => {
     setIsTypeing(true);
     setSearchValue(text);
-    // const results = await refetch();
-    // setUsers(results);
-    console.log("hello");
   };
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      // handleChange(searchValue);
       handleChange(searchValue);
       setIsTypeing(false);
     }, 500);
@@ -46,9 +41,7 @@ const SearchBar: React.FunctionComponent<ISearchBarProps> = ({ userId }) => {
           />
         </div>
         <div className="relative">
-          {searchValue && !isTypeing && (
-            <SearchResults userId={userId} search={searchValue} />
-          )}
+          {searchValue && !isTypeing && <SearchResults search={searchValue} />}
         </div>
       </div>
     </div>

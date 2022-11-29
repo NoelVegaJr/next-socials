@@ -6,26 +6,22 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { NextPageContext } from "next";
-import { Session } from "next-auth";
-import { getSession } from "next-auth/react";
 import * as React from "react";
-import { FormEvent, useEffect, useState } from "react";
-import Avatar from "../components/Avatar";
-import ChatFeed from "../components/ChatFeed";
-import Conversations from "../components/Conversations";
-import Modal from "../components/Modal";
-import SideNav from "../components/SideNav";
+import { FormEvent, useContext, useEffect, useState } from "react";
+import Avatar from "./Avatar";
+import ChatFeed from "./ChatFeed";
+import Conversations from "./Conversations";
+import Modal from "./Modal";
+import { UserContext } from "../context/user-context";
 
 import { trpc } from "../lib/trpc";
+import { MessagesContext } from "../context/messages-context";
 
-interface IMessagesPageProps {
-  authSession: Session;
-}
+interface IMessagesPageProps {}
 
-const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
-  authSession,
-}) => {
+const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({}) => {
+  const userCtx = useContext(UserContext);
+  const msgsCtx = useContext(MessagesContext);
   const [usersInNewConvo, setUsersInNewConvo] = useState<any[]>([]);
   const [searchText, setSearchText] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -40,7 +36,7 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
   const newConversationMutation = trpc.messenger.newConversation.useMutation();
   const getConversationsQuery =
     trpc.messenger.getConversationsByUserId.useQuery({
-      userId: authSession?.user.id,
+      userId: userCtx.id,
     });
 
   const handleChange = async (text: string) => {
@@ -83,15 +79,15 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
 
   const handleCreateConvo = () => {
     newConversationMutation.mutate({
-      creatorId: authSession.user.id,
-      userIds: [...usersInNewConvo.map((u) => u.id), authSession.user.id],
+      creatorId: userCtx.id,
+      userIds: [...usersInNewConvo.map((u) => u.id), userCtx.id],
     });
   };
 
   return (
     <>
       <div className="min-h-screen w-full  flex">
-        <SideNav />
+        {/* <SideNav /> */}
         <div>
           <div className="border-r h-full w-96">
             <div className=" px-4 py-4 flex justify-between items-center">
@@ -124,12 +120,12 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
                 openConversation={(conversation: any) =>
                   setOpenConversation(conversation)
                 }
-                conversations={getConversationsQuery.data ?? []}
+                conversations={msgsCtx ?? []}
               />
             </div>
           </div>
         </div>
-        <ChatFeed conversation={openConversation} user={authSession?.user} />
+        <ChatFeed conversation={openConversation} user={userCtx} />
       </div>
       {openNewConvoModal && (
         <Modal close={() => setOpenNewConvoModal(false)}>
@@ -220,34 +216,5 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
     </>
   );
 };
-
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
-  if (!session) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
-
-  if (!session.user.username) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/user-details",
-      },
-      props: {},
-    };
-  }
-
-  return {
-    props: {
-      authSession: session,
-    },
-  };
-}
 
 export default MessagesPage;

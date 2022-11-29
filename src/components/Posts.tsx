@@ -1,33 +1,18 @@
 import * as React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../context/user-context";
 import { trpc } from "../lib/trpc";
 import Post from "./Post";
 
 interface IPostsProps {
-  userId: string;
   posts: any;
 }
 
 const Posts: React.FunctionComponent<IPostsProps> = ({
-  userId,
   posts,
 }: IPostsProps) => {
-  // const getPosts = trpc.post.getPostsByUserId.useQuery({
-  //   userId,
-  // });
+  const userCtx = useContext(UserContext);
 
-  // const getPosts = trpc.post.getHomePosts.useQuery({
-  //   userId,
-  //   posts
-  // });
-  // const [posts, setPosts] = useState<any[]>();
-
-  // React.useEffect(() => {
-  //   if (getPosts.data) {
-  //     setPosts(getPosts.data as any[]);
-  //   }
-  // }, [getPosts.data]);
-  // console.log(posts);
   return (
     <>
       <ul className="flex flex-col gap-4">
@@ -39,7 +24,7 @@ const Posts: React.FunctionComponent<IPostsProps> = ({
                 name={post.user.name}
                 username={post.user.username}
                 image={post.user.image}
-                userId={userId}
+                userId={userCtx.id}
                 text={post.text}
                 date={post.date}
                 likes={post.likes}

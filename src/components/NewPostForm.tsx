@@ -3,18 +3,17 @@ import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "../lib/trpc";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
+import { UserContext } from "../context/user-context";
 
-interface INewPostFormProps {
-  userId: string;
-  avatarSrc?: string | null;
-}
+interface INewPostFormProps {}
 
-const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
-  userId,
-  avatarSrc,
-}: INewPostFormProps) => {
+const NewPostForm: React.FunctionComponent<
+  INewPostFormProps
+> = ({}: INewPostFormProps) => {
+  const userCtx = useContext(UserContext);
+
   const utils = trpc.useContext();
   const createPostMutation = trpc.post.create.useMutation({
     onSuccess: () => {
@@ -35,13 +34,13 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
 
   const handleCreatePost = () => {
     setText("");
-    createPostMutation.mutate({ userId, text });
+    createPostMutation.mutate({ userId: userCtx.id, text });
   };
 
   return (
     <div className="bg-white h-fit flex flex-col p-4 gap-2 border-b-2 ">
       <div className=" flex  items-center gap-4 ">
-        <Avatar src={avatarSrc} className="w-12 h-12 mb-2" />
+        <Avatar src={userCtx.image} className="w-12 h-12 mb-2" />
 
         <textarea
           id="review-text"
@@ -54,11 +53,6 @@ const NewPostForm: React.FunctionComponent<INewPostFormProps> = ({
         />
       </div>
       <div className="flex  justify-end gap-16 text-slate-400">
-        {/* <div className="flex gap-10">
-          <button className="flex gap-2 items-center">
-            <FontAwesomeIcon icon={faImage} /> Image
-          </button>
-        </div> */}
         <button
           onClick={handleCreatePost}
           className="bg-blue-600 text-white font-semibold px-4 py-1 rounded-xl"

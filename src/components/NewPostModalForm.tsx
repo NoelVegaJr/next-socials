@@ -1,16 +1,14 @@
 import * as React from "react";
 import NewPostForm from "./NewPostForm";
 
-interface INewPostModalFormProps {
-  userId: string;
-}
+interface INewPostModalFormProps {}
 
-const NewPostModalForm: React.FunctionComponent<INewPostModalFormProps> = ({
-  userId,
-}) => {
+const NewPostModalForm: React.FunctionComponent<
+  INewPostModalFormProps
+> = ({}) => {
   return (
     <div className="rounded-lg overflow-hidden">
-      <NewPostForm userId={userId} />
+      <NewPostForm />
     </div>
   );
 };

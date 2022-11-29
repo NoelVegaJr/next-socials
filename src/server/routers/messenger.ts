@@ -124,7 +124,11 @@ export const messengerRouter = router({
     }),
   searchMessages: procedure
     .input(z.object({ text: z.string() }))
-    .query(async ({ input }) => {}),
+    .query(async ({ input }) => {
+      const { text } = input;
+
+      await prisma.conversation;
+    }),
 });
 
 // export type definition of API

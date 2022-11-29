@@ -5,20 +5,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "../lib/trpc";
 import FollowButton from "./FollowButton";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Modal from "./Modal";
 import EditProfileForm from "./EditProfileForm";
 import Banner from "./Banner";
+import { UserContext } from "../context/user-context";
 
 interface IProfileBoxProps {
   user: any;
-  loggedOnUserId: string;
 }
 
 const ProfileBox: React.FunctionComponent<IProfileBoxProps> = ({
   user,
-  loggedOnUserId,
 }: IProfileBoxProps) => {
+  const userCtx = useContext(UserContext);
   const [editingProfile, setEditingProfile] = useState(false);
 
   return (
@@ -31,12 +31,12 @@ const ProfileBox: React.FunctionComponent<IProfileBoxProps> = ({
           </div>
         </div>
         <div className="p-4 flex justify-end">
-          {user.id !== loggedOnUserId ? (
+          {user.id !== userCtx.id ? (
             <FollowButton
-              loggedInUserId={loggedOnUserId}
+              loggedInUserId={userCtx.id}
               profileUserId={user.id}
               isFollowing={user.followers.find(
-                (f: any) => f.followerUserId === loggedOnUserId
+                (f: any) => f.followerUserId === userCtx.id
               )}
             />
           ) : (
