@@ -1,7 +1,6 @@
 import {
   faCheck,
   faEnvelope,
-  faPaperPlane,
   faPlus,
   faSearch,
   faX,
@@ -13,11 +12,11 @@ import { getSession } from "next-auth/react";
 import * as React from "react";
 import { FormEvent, useEffect, useState } from "react";
 import Avatar from "../components/Avatar";
+import ChatFeed from "../components/ChatFeed";
 import Conversations from "../components/Conversations";
 import Modal from "../components/Modal";
 import SideNav from "../components/SideNav";
-import { dateFormatter } from "../lib/dateFormatter";
-import { pusherClient } from "../lib/pusher";
+
 import { trpc } from "../lib/trpc";
 
 interface IMessagesPageProps {
@@ -31,9 +30,7 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
   const [searchText, setSearchText] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [openNewConvoModal, setOpenNewConvoModal] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const newMessage = trpc.messenger.push.useMutation();
+  const [openConversation, setOpenConversation] = useState<any>();
   const { data: users, refetch } = trpc.user.getUsersByUsername.useQuery(
     {
       username: searchText,
@@ -41,10 +38,20 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
     { enabled: false }
   );
   const newConversationMutation = trpc.messenger.newConversation.useMutation();
+  const getConversationsQuery =
+    trpc.messenger.getConversationsByUserId.useQuery({
+      userId: authSession?.user.id,
+    });
 
   const handleChange = async (text: string) => {
     setSearchText(text);
   };
+
+  useEffect(() => {
+    if (getConversationsQuery.data) {
+      setOpenConversation(getConversationsQuery.data[0]);
+    }
+  }, [getConversationsQuery.data?.length]);
 
   useEffect(() => {
     const handler = setTimeout(async () => {
@@ -60,30 +67,6 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
       clearTimeout(handler);
     };
   }, [searchText]);
-
-  useEffect(() => {
-    const channel = pusherClient.subscribe("1");
-    channel.bind("new-message", (msg: any) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-    return () => {
-      pusherClient.unsubscribe("1");
-    };
-  }, []);
-
-  const handleSubmitMsg = async () => {
-    if (!msg) return;
-    if (authSession.user.image) {
-      newMessage.mutate({
-        msg,
-        conversationId: "1",
-        userId: authSession.user.id,
-        date: new Date().toString(),
-        avatarUrl: authSession.user.image,
-      });
-    }
-    setMsg("");
-  };
 
   const handleUsersInConvo = (selectedUser: any) => {
     console.log(selectedUser);
@@ -101,7 +84,7 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
   const handleCreateConvo = () => {
     newConversationMutation.mutate({
       creatorId: authSession.user.id,
-      userIds: usersInNewConvo.map((u) => u.id),
+      userIds: [...usersInNewConvo.map((u) => u.id), authSession.user.id],
     });
   };
 
@@ -139,57 +122,17 @@ const MessagesPage: React.FunctionComponent<IMessagesPageProps> = ({
               </div>
             </div>
             <div className="">
-              <Conversations />
+              <Conversations
+                active={openConversation}
+                openConversation={(conversation: any) =>
+                  setOpenConversation(conversation)
+                }
+                conversations={getConversationsQuery.data ?? []}
+              />
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full">
-          <div className="grow">
-            <ul className="flex flex-col gap-4 p-4">
-              {messages.map((m) => {
-                return (
-                  <li
-                    key={m.msg}
-                    className={`flex ${
-                      m.userId === authSession.user.id
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div className="flex gap-2 w-fit">
-                      {m.userId !== authSession.user.id && (
-                        <Avatar src={m.avatarUrl} className="w-12 h-12" />
-                      )}
-                      <div>
-                        <div className="w-fit bg-blue-500 px-2 py-1 rounded-lg text-white">
-                          <p>{m.msg}</p>
-                        </div>
-                        <p className="text-xs">{dateFormatter(m.date)}</p>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div className="px-4 py-2 pb-4 border-t flex items-center ">
-            <input
-              type="text"
-              placeholder="Start a new message"
-              className=" w-full rounded-l-2xl py-3 px-4 bg-slate-100  placeholder-slate-500 outline-none "
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-              onKeyUp={(e) => e.key === "Enter" && handleSubmitMsg()}
-            />
-            <button
-              onClick={handleSubmitMsg}
-              className="rounded-r-xl py-3 px-4 bg-slate-100"
-            >
-              <FontAwesomeIcon icon={faPaperPlane} className="text-blue-400 " />
-            </button>
-          </div>
-        </div>
+        <ChatFeed conversation={openConversation} user={authSession?.user} />
       </div>
       {openNewConvoModal && (
         <Modal close={() => setOpenNewConvoModal(false)}>

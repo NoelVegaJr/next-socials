@@ -7,34 +7,77 @@ export const messengerRouter = router({
   push: procedure
     .input(
       z.object({
-        msg: z.string(),
+        text: z.string(),
         conversationId: z.string(),
         userId: z.string(),
         date: z.string(),
-        avatarUrl: z.string(),
+        image: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const { msg, conversationId, userId, date, avatarUrl } = input;
+      const { text, conversationId, userId, date, image } = input;
       console.log(input);
       try {
+        const message = await prisma.message.create({
+          data: {
+            conversationId,
+            userId,
+            text,
+          },
+          include: {
+            sender: true,
+          },
+        });
+
         const pusherResponse = await pusher.trigger(
           conversationId,
           "new-message",
           {
-            msg,
+            id: message.id,
+            text,
             userId,
             date,
-            avatarUrl,
+            image,
+            sender: message.sender,
           }
         );
 
-        console.log("pusher response: ", pusherResponse);
         return { ok: true };
       } catch (error) {
-        console.log(error);
         return { ok: false };
       }
+    }),
+  getConversationsByUserId: procedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const { userId } = input;
+      const conversations = await prisma.conversation.findMany({
+        where: {
+          participants: {
+            some: {
+              userId,
+            },
+          },
+        },
+
+        include: {
+          participants: {
+            include: {
+              user: true,
+            },
+          },
+          messages: {
+            include: {
+              sender: true,
+            },
+            orderBy: {
+              date: "desc",
+            },
+          },
+        },
+      });
+
+      return conversations;
     }),
   newConversation: procedure
     .input(
@@ -46,7 +89,42 @@ export const messengerRouter = router({
     .mutation(async ({ input }) => {
       const { userIds, creatorId } = input;
       console.log("Inside new Convo endpoint: ", creatorId, userIds);
+      await prisma.conversation.create({
+        data: {
+          participants: {
+            createMany: {
+              data: [
+                ...userIds.map((id) => {
+                  return { userId: id, creator: creatorId === id };
+                }),
+              ],
+            },
+          },
+        },
+      });
     }),
+  newMessage: procedure
+    .input(
+      z.object({
+        conversationId: z.string(),
+        userId: z.string(),
+        text: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { conversationId, userId, text } = input;
+
+      await prisma.message.create({
+        data: {
+          conversationId,
+          userId,
+          text,
+        },
+      });
+    }),
+  searchMessages: procedure
+    .input(z.object({ text: z.string() }))
+    .query(async ({ input }) => {}),
 });
 
 // export type definition of API
